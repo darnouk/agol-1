@@ -46,7 +46,7 @@
         latitude: 30.263098 
       };
 
-      // Defining the marker style
+      // Defining the marker style for the point graphic
       const simpleMarkerSymbol = {
         type: "simple-marker",
         color: [255, 69, 0],  // Bright orange-red color
@@ -80,11 +80,26 @@
         content: "<b>Name:</b> {INSTNM}<br><b>Type:</b> {C21ENPRF}<br>"
       };
 
+      // Define a renderer for the educational schools (flame orange diamonds)
+      const eduRenderer = {
+        type: "simple",
+        symbol: {
+          type: "simple-marker",
+          color: [255, 69, 0],  // Bright orange-red color
+          outline: {
+            color: [255, 255, 255], // White outline
+            width: 1
+          },
+          style: "diamond"
+        }
+      };
+
       // Adding the const for the feature layer
       const usaeduLayer = new FeatureLayer({
         url: "https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/Colleges_and_Universities_View/FeatureServer",
         outFields: ["INSTNM", "C21ENPRF"],
-        popupTemplate: popupEduusa
+        popupTemplate: popupEduusa,
+        renderer: eduRenderer  // Apply the renderer
       });
 
       // Adding the feature layer to the map
@@ -106,7 +121,7 @@
         symbol: {
           type: "text",
           color: "#FFFFFF",
-          haloColor: "#5E8D74",
+          haloColor: [10,10,120],
           haloSize: "2px",
           font: {
             size: "12px",
@@ -121,11 +136,19 @@
         }
       };
 
+      // Define a pop-up for airportLayer
+      const popupAirport = {
+        title: "Airport Information",
+        content: "<b>Facility Name:</b> {FAC_NAME}<br><b>Regional Code:</b> {Region_Cod}<br>"
+      };
+
       const airportLayer = new FeatureLayer({
         url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/US_Airports/FeatureServer",
         renderer: airportRenderer,
         definitionExpression: "Fac_Type = 'AIRPORT'",
-        labelingInfo: [airportLabels]
+        labelingInfo: [airportLabels],
+        outFields: ["FAC_NAME", "Region_Cod"],
+        popupTemplate: popupAirport
       });
 
       // Adding the feature layer to the map
